@@ -13,7 +13,7 @@ Welcome to **AlbumFinder**, a pastel-themed music search experience that blends 
 I wanted to create a music finder that feels like a blend of a dreamy digital café and a glowing cyberpunk playlist — aesthetic, fast, and fun to use 🌸💿⚡️.
 
 ## 🌐 Live Preview
-Check it out here: [Click to Explore](https://xinyashan1.github.io/xinyashanportfolio/AlbumFinder)  
+Check it out here: [Click to Explore]([https://xinyashan1.github.io/xinyashanportfolio/AlbumFinder](https://xinyashanportfolio.github.io/AlbumFinder/))  
 *(Best viewed on desktop or tablet for full pastel magic!)*
 
 ## 🛠️ Built With
