@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PeachTracks – Album Finder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-utopia: #fff6f1;
+      --text-utopia: #402b2b;
+      --card-utopia: #ffe5dc;
+      --accent-utopia: #ffbfa3;
+
+      --bg-dystopia: #0e0e1a;
+      --text-dystopia: #e0e0ff;
+      --card-dystopia: #1f1f3a;
+      --accent-dystopia: #8b5cf6;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Quicksand', sans-serif;
+      background-color: var(--bg-utopia);
+      color: var(--text-utopia);
+      transition: 0.5s ease, color 0.5s ease;
+    }
+
+    body.dark {
+      background-color: var(--bg-dystopia);
+      color: var(--text-dystopia);
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+
+    .toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+    }
+
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    input[type="text"] {
+      padding: 0.8rem 1rem;
+      border: 2px solid var(--accent-utopia);
+      border-radius: 12px;
+      font-size: 1rem;
+      width: 80%;
+      max-width: 400px;
+      transition: all 0.3s ease;
+      background: #fff6f1;
+      color: #402b2b;
+    }
+
+    body.dark input[type="text"] {
+      border-color: var(--accent-dystopia);
+      background: #1a1a2f;
+      color: #e0e0ff;
+    }
+
+    .album-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .album-card {
+      background-color: var(--card-utopia);
+      border-radius: 15px;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: 0.3s ease;
+    }
+
+    .album-card img {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    .album-card h3 {
+      margin: 0.6rem 0 0.2rem;
+      font-size: 1rem;
+    }
+
+    .album-card p {
+      margin: 0.2rem 0;
+      font-size: 0.9rem;
+      color: inherit;
+    }
+
+    body.dark .album-card {
+      background-color: var(--card-dystopia);
+    }
+
+    .toggle button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      background-color: var(--accent-utopia);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    body.dark .toggle button {
+      background-color: var(--accent-dystopia);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="toggle">
+    <button id="themeToggle">🌞 Utopia Mode</button>
+  </div>
+  <header>
+    <h1>PeachTracks 🎵</h1>
+    <p>Find K-Pop, J-Pop, and C-Pop albums in pastel harmony</p>
+  </header>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search albums or artists...">
+  </div>
+
+  <div class="album-grid" id="resultsGrid"></div>
+
+  <script>
+    const input = document.getElementById('searchInput');
+    const resultsGrid = document.getElementById('resultsGrid');
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    const asianPopArtists = [
+      "BTS", "BLACKPINK", "TWICE", "IU", "SEVENTEEN", "EXO", "Stray Kids",
+      "NewJeans", "Aimer", "YOASOBI", "LiSA", "Hikaru Utada", "Jay Chou",
+      "JJ Lin", "G.E.M.", "Jolin Tsai", "Lay Zhang", "Zhou Shen", "WayV"
+    ];
+
+    // Preload popular artists on page load
+    window.addEventListener("DOMContentLoaded", () => {
+      resultsGrid.innerHTML = '';
+      asianPopArtists.forEach(artist => {
+        fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(artist)}&entity=album&limit=1`)
+          .then(res => res.json())
+          .then(data => {
+            data.results.forEach(album => createAlbumCard(album));
+          });
+      });
+    });
+
+    input.addEventListener('input', () => {
+      const query = input.value.trim();
+      if (query.length < 2) return;
+
+      fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=album&limit=18`)
+        .then(res => res.json())
+        .then(data => {
+          resultsGrid.innerHTML = '';
+          data.results.forEach(album => createAlbumCard(album));
+        });
+    });
+
+    function createAlbumCard(album) {
+      const card = document.createElement('div');
+      card.className = 'album-card';
+      const releaseYear = new Date(album.releaseDate).getFullYear();
+      card.innerHTML = `
+        <img src="${album.artworkUrl100.replace('100x100', '300x300')}" alt="${album.collectionName}">
+        <h3>${album.collectionName}</h3>
+        <p><strong>${album.artistName}</strong></p>
+        <p>Released: ${releaseYear}</p>
+      `;
+      resultsGrid.appendChild(card);
+    }
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      themeToggle.textContent = body.classList.contains('dark') ? '🌙 Dystopia Mode' : '🌞 Utopia Mode';
+    });
+  </script>
+</body>
+</html>
