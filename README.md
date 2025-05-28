@@ -19,6 +19,7 @@ Check it out here: [Click to Explore](https://xinyashan1.github.io/xinyashanport
 ## 🛠️ Built With
 - HTML
 - CSS
+- Javascript
 - 💕 A sprinkle of design magic
 
 ## 💭 Future Features
